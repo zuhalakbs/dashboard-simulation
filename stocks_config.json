@@ -1,0 +1,28 @@
+{
+    "stocks": [
+        {
+            "symbol": "THYAO",
+            "name": "Türk Hava Yolları",
+            "base_price": 234.50,
+            "tick_size": 0.25
+        },
+        {
+            "symbol": "GARAN",
+            "name": "Garanti Bankası",
+            "base_price": 456.75,
+            "tick_size": 0.50
+        },
+        {
+            "symbol": "AKBNK",
+            "name": "Akbank",
+            "base_price": 123.25,
+            "tick_size": 0.10
+        },
+        {
+            "symbol": "SISE",
+            "name": "Şişecam",
+            "base_price": 89.40,
+            "tick_size": 0.05
+        }
+    ]
+}
