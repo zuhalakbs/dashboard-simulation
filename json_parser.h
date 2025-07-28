@@ -12,6 +12,8 @@ struct Stock {
     std::string name;
     double base_price;
     double tick_size;
+    double min;
+    double max;
 };
 
 class StockConfigParser {
@@ -73,6 +75,14 @@ public:
                 else if (line.find("\"tick_size\"") != std::string::npos) {
                     std::string tickStr = extractValue(line, "tick_size");
                     currentStock.tick_size = std::stod(tickStr);
+                }
+                else if (line.find("\"min\"") != std::string::npos) {
+                    std::string minStr = extractValue(line, "min");
+                    currentStock.min = std::stod(minStr);
+                }
+                else if (line.find("\"max\"") != std::string::npos) {
+                    std::string maxStr = extractValue(line, "max");
+                    currentStock.max = std::stod(maxStr);
                 }
                 
                     if (line.find("}") != std::string::npos && line.find("{") == std::string::npos) {
