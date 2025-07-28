@@ -4,25 +4,34 @@
             "symbol": "THYAO",
             "name": "Türk Hava Yolları",
             "base_price": 234.50,
-            "tick_size": 0.25
+            "tick_size": 0.25,
+            "min": 200.0,
+            "max": 260.0
+
         },
         {
             "symbol": "GARAN",
             "name": "Garanti Bankası",
             "base_price": 456.75,
-            "tick_size": 0.50
+            "tick_size": 0.50,
+            "min": 410.0,
+            "max": 500.0
         },
         {
             "symbol": "AKBNK",
             "name": "Akbank",
             "base_price": 123.25,
-            "tick_size": 0.10
+            "tick_size": 0.10,
+            "min": 105.0,
+            "max": 140.0
         },
         {
             "symbol": "SISE",
             "name": "Şişecam",
             "base_price": 89.40,
-            "tick_size": 0.05
+            "tick_size": 0.05,
+            "min": 80.0,
+            "max": 100.0
         }
     ]
 }
