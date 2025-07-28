@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <unistd.h>
 #include <cstring>
 #include <errno.h>
@@ -15,6 +16,7 @@
 #include <map>
 #include <deque> 
 #include "config_reader.h"
+#include "json_parser.h"
 
 using namespace std;
 
@@ -100,6 +102,18 @@ string generateTradeId() {
 void sendToClient(int clientSocket, const string& message) {
     string msg = message + "\n";
     send(clientSocket, msg.c_str(), msg.length(), 0);
+}
+
+vector<Stock> stocks;
+map<string, pair<double, double> > stockPriceLimits;
+
+void initStockPriceLimitsFromJson(const string& filename) {
+    StockConfigParser parser;
+    stocks = parser.loadStocks(filename);
+
+    for (const Stock& stock : stocks) {
+        stockPriceLimits[stock.symbol] = make_pair(stock.max, stock.min);
+    }
 }
 
 string getDateStamp() {
@@ -642,6 +656,15 @@ void* handleClient(void* arg) {
             
             double price = atof(priceStr.c_str());
             int quantity = atoi(quantityStr.c_str());
+
+            if (stockPriceLimits.find(symbol) != stockPriceLimits.end()) {
+             pair<double, double> limits = stockPriceLimits[symbol];
+            if (price < limits.second || price > limits.first) {
+              string response = "EMIR REDDEDILDI|Fiyat limitinin disinda\n";
+              send(clientSocket, response.c_str(), response.length(), 0);
+             continue;
+             }
+}
             
             Order order;
             order.orderId = generateOrderId();
@@ -906,6 +929,8 @@ int main() {
         cerr << "Socket oluşturma hatası!" << endl;
         return 1;
     }
+
+    initStockPriceLimitsFromJson("stocks_config.json");
     
     globalServerSocket = serverSocket;
     
@@ -918,10 +943,10 @@ int main() {
     serverAddress.sin_addr.s_addr = INADDR_ANY;
     serverAddress.sin_port = htons(port);
     
-    if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0) {
-        cerr << "Port " << port << " kullanımda!" << endl;
-        close(serverSocket);
-        return 1;
+   if (::bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0) {
+    cerr << "Port " << port << " kullanımda!" << endl;
+    close(serverSocket);
+    return 1;
     }
     
     if (listen(serverSocket, maxClients) < 0) {
